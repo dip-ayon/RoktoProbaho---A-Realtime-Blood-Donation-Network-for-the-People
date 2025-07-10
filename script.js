@@ -2401,3 +2401,191 @@ if (typeof module !== 'undefined' && module.exports) {
         handleBloodRequest
     };
 }
+
+// 
+//
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation elements
+    const navMenu = document.getElementById('nav-menu');
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageSections = document.querySelectorAll('.page-section');
+    
+    // Mobile menu toggle
+    navToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+    });
+    
+    // Navigation functionality
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active navigation link
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Close mobile menu if open
+            navMenu.classList.remove('active');
+            
+            // Get target page ID from href
+            const target = this.getAttribute('href').substring(1);
+            
+            // Show the corresponding page with smooth transition
+            showPage(target);
+        });
+    });
+    
+    // Function to show a specific page
+    function showPage(pageId) {
+        // Map page IDs to section IDs
+        const pageMap = {
+            'home': 'dashboard',
+            'messages': 'messages-page',
+            'notifications': 'notifications-page',
+            'history': 'history-page',
+            'leaderboard': 'leaderboard-page'
+        };
+        
+        const targetSectionId = pageMap[pageId] || 'dashboard';
+        
+        // Hide all pages first
+        pageSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show the target page
+        const targetSection = document.getElementById(targetSectionId);
+        if (targetSection) {
+            // Delay adding active class to allow for transition
+            setTimeout(() => {
+                targetSection.classList.add('active');
+            }, 10);
+        }
+    }
+    
+    // Theme toggle functionality
+    const themeToggle = document.querySelector('.nav-theme-toggle');
+    themeToggle.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        document.body.classList.toggle('dark-theme');
+        
+        if (document.body.classList.contains('dark-theme')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+    });
+    
+    // View Details button functionality
+    document.querySelectorAll('.btn-primary').forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.request-card');
+            const name = card.querySelector('.request-name').textContent;
+            const bloodType = card.querySelector('.request-detail:nth-child(1) span').textContent;
+            const location = card.querySelector('.request-detail:nth-child(2) span').textContent;
+            
+            alert(`Request Details:\n\nName: ${name}\n${bloodType}\n${location}\n\nWould you like to help?`);
+        });
+    });
+    
+    // Notification action button functionality
+    document.querySelectorAll('.notification-action').forEach(button => {
+        button.addEventListener('click', function() {
+            const notification = this.closest('.notification-item');
+            const text = notification.querySelector('.notification-text').textContent;
+            
+            alert(`Notification Details:\n\n${text}`);
+        });
+    });
+});
+
+// script.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation elements
+    const navMenu = document.getElementById('nav-menu');
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageSections = document.querySelectorAll('.page-section');
+    
+    // Mobile menu toggle
+    navToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+    });
+    
+    // Navigation functionality - fixed tab switching
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get the target page from data attribute
+            const targetPage = this.getAttribute('data-page');
+            
+            // Update active navigation link
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Close mobile menu if open
+            navMenu.classList.remove('active');
+            
+            // Show the corresponding page with smooth transition
+            showPage(targetPage);
+        });
+    });
+    
+    // Function to show a specific page
+    function showPage(pageId) {
+        // Hide all pages first
+        pageSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show the target page
+        const targetSection = document.getElementById(pageId);
+        if (targetSection) {
+            // Add active class with slight delay for transition
+            setTimeout(() => {
+                targetSection.classList.add('active');
+            }, 10);
+        }
+    }
+    
+    // Theme toggle functionality
+    const themeToggle = document.querySelector('.nav-theme-toggle');
+    themeToggle.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        document.body.classList.toggle('dark-theme');
+        
+        if (document.body.classList.contains('dark-theme')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+    });
+    
+    // View Details button functionality
+    document.querySelectorAll('.btn-primary').forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.request-card');
+            const name = card.querySelector('.request-name').textContent;
+            const bloodType = card.querySelector('.request-detail:nth-child(1) span').textContent;
+            const location = card.querySelector('.request-detail:nth-child(2) span').textContent;
+            
+            alert(`Request Details:\n\nName: ${name}\n${bloodType}\n${location}\n\nWould you like to help?`);
+        });
+    });
+    
+    // Notification action button functionality
+    document.querySelectorAll('.notification-action').forEach(button => {
+        button.addEventListener('click', function() {
+            const notification = this.closest('.notification-item');
+            const text = notification.querySelector('.notification-text').textContent;
+            
+            alert(`Notification Details:\n\n${text}`);
+        });
+    });
+});
