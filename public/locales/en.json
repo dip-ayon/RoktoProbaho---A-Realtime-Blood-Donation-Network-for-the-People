@@ -1,0 +1,216 @@
+{
+    "nav": {
+        "home": "Home",
+        "messages": "Messages",
+        "notifications": "Notifications",
+        "history": "History",
+        "leaderboard": "Leaderboard",
+        "settings": "Settings",
+        "help": "Help",
+        "support": "Support",
+        "menu": "Menu",
+        "appMode": "App Mode",
+        "donorMode": "Donor Mode",
+        "recipientMode": "Recipient Mode",
+        "language": "Language",
+        "english": "English",
+        "bengali": "Bengali",
+        "logout": "Logout",
+        "myAccount": "My Account",
+        "login": "Login",
+        "signup": "Sign Up"
+    },
+    "home": {
+        "hero": {
+            "title": "A Drop of Blood, A Gift of Life.",
+            "subtitle": "Connect with thousands of donors and recipients instantly. Your single donation can save up to three lives.",
+            "requestButton": "Request Blood",
+            "donateButton": "Become a Donor"
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "subtitle": "A simple 4-step process to connect donors and recipients.",
+            "feature1Title": "Create Request",
+            "feature1Desc": "Recipients post a blood request with details like blood type and location.",
+            "feature2Title": "Find Match",
+            "feature2Desc": "Our system instantly notifies nearby compatible donors.",
+            "feature3Title": "Connect & Coordinate",
+            "feature3Desc": "Donors and recipients connect through our secure chat to coordinate.",
+            "feature4Title": "Save a Life",
+            "feature4Desc": "A life is saved, and our community grows stronger."
+        },
+        "impact": {
+            "title": "Our Impact",
+            "subtitle": "See the difference we're making together.",
+            "livesSaved": "Lives Saved",
+            "registeredDonors": "Registered Donors",
+            "happeningNow": "Happening Now",
+            "needs": "Needs",
+            "in": "in"
+        },
+        "stories": {
+            "title": "Stories of Hope",
+            "subtitle": "Real stories from our community members.",
+            "testimonial1Name": "Anika Tabassum",
+            "testimonial1Role": "Recipient's Mother",
+            "testimonial1Text": "When my son needed urgent blood, RoktoSheba was a lifesaver. We found a donor in less than an hour. I am forever grateful.",
+            "testimonial2Name": "Fahim Ahmed",
+            "testimonial2Role": "Donor",
+            "testimonial2Text": "The app makes it so easy to help. Getting a notification that my blood type is needed nearby and being able to respond instantly is an amazing feeling."
+        },
+        "cta": {
+            "title": "Ready to Make a Difference?",
+            "subtitle": "Join our community of life-savers today. Your contribution is invaluable.",
+            "joinButton": "Join Now"
+        }
+    },
+    "login": {
+        "title": "Welcome Back!",
+        "description": "Sign in to continue your journey of saving lives.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@example.com",
+        "passwordLabel": "Password",
+        "loginButton": "Login",
+        "noAccount": "Don't have an account?",
+        "signupLink": "Sign up"
+    },
+    "signup": {
+        "title": "Join the Community",
+        "description": "Create an account to start donating or requesting blood.",
+        "fullNameLabel": "Full Name",
+        "fullNamePlaceholder": "Enter your full name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@example.com",
+        "phoneLabel": "Phone Number",
+        "addressLabel": "Address",
+        "addressPlaceholder": "e.g., Dhaka",
+        "bloodTypeLabel": "Blood Type",
+        "bloodTypePlaceholder": "Select Blood Type",
+        "passwordLabel": "Password",
+        "createAccountButton": "Create Account",
+        "haveAccount": "Already have an account?",
+        "loginLink": "Login"
+    },
+    "dashboard": {
+        "welcome": "Welcome back, {name}!",
+        "modeIntro": "You are currently in {mode} mode.",
+        "donor": "Donor",
+        "recipient": "Recipient",
+        "nearbyRequests": "Nearby Requests",
+        "nearbyRequestsDesc": "Find opportunities to donate blood in your area.",
+        "viewDetails": "View Details",
+        "noOpportunities": "No donation opportunities available right now. We'll notify you!",
+        "myBloodRequests": "My Blood Requests",
+        "myBloodRequestsDesc": "Track the status of your ongoing blood requests.",
+        "newRequest": "New Request",
+        "units": "units"
+    },
+    "requestBlood": {
+        "title": "Create a Blood Request",
+        "description": "Fill out the form below to find a donor. Your request will be sent to nearby matching donors.",
+        "patientName": "Patient's Full Name",
+        "patientNamePlaceholder": "Enter patient's name",
+        "requiredBloodType": "Required Blood Type",
+        "selectPlaceholder": "Select",
+        "quantity": "Quantity (Units)",
+        "quantityPlaceholder": "e.g., 2",
+        "location": "Hospital/Clinic Location",
+        "addressPlaceholder": "Enter the full address",
+        "urgency": "Urgency Level",
+        "contactPhone": "Contact Phone",
+        "additionalDetails": "Additional Details (Optional)",
+        "detailsPlaceholder": "e.g., Patient's condition, case details",
+        "submitButton": "Submit Request",
+        "incompleteForm": "Incomplete Form",
+        "requestSubmitted": "Request Submitted",
+        "searchingDonors": "We are now searching for nearby donors for you.",
+        "redirecting": "Redirecting...",
+        "neededBy": "Needed By",
+        "pickDate": "Pick a date"
+    },
+    "donors": {
+
+    },
+    "notifications": {
+
+    },
+    "history": {
+      "title": "Your History",
+      "description": "A log of all your donation and reception activities.",
+      "cardTitle": "Activity Log",
+      "activityMessage": "Here's a record of your past activities."
+    },
+    "leaderboard": {
+      "title": "Top Donors",
+      "description": "Celebrating our heroes who make a difference.",
+      "cardTitle": "Leaderboard"
+    },
+    "settings": {
+        "title": "Settings",
+        "description": "Manage your profile and app preferences.",
+        "profileDetails": {
+            "title": "Profile Details",
+            "description": "Update your personal information.",
+            "changePhoto": "Change Photo",
+            "photoHint": "PNG, JPG, GIF up to 10MB.",
+            "fullName": "Full Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "address": "Address",
+            "dob": "Date of Birth",
+            "pickDate": "Pick a date",
+            "lastDonation": "Last Donation Date",
+            "bloodReport": "Blood Report",
+            "upload": "Upload",
+            "uploadReportHint": "Upload your latest health report (optional).",
+            "availability": "Donation Availability",
+            "available": "Available",
+            "temporarilyunavailable": "Temporarily Unavailable",
+            "notavailable": "Not Available",
+            "bloodType": "Blood Type",
+            "totalDonations": "Total Donations",
+            "badges": "Your Badges",
+            "saveChanges": "Save Changes"
+        },
+        "appSettings": {
+            "title": "App Preferences",
+            "description": "Customize your app experience.",
+            "appMode": "App Mode",
+            "donorMode": "I want to donate",
+            "recipientMode": "I need blood",
+            "language": "Language",
+            "savePreferences": "Save Preferences"
+        }
+    },
+    "help": {
+      "title": "Help & FAQ",
+      "description": "Find answers to common questions.",
+      "cardTitle": "Frequently Asked Questions",
+      "q1": "How do I become a blood donor?",
+      "a1": "To become a donor, simply sign up through the app and complete your profile. Ensure you meet the health and eligibility criteria for blood donation.",
+      "q2": "What are the eligibility criteria for donating blood?",
+      "a2": "Generally, you must be in good health, be at least 18 years old, and weigh at least 50 kg (110 lbs). Specific criteria may vary, so please consult a medical professional.",
+      "q3": "How do I request blood?",
+      "a3": "Switch to 'Recipient' mode from the settings or your dashboard. Then, click the 'New Request' button and fill in the required details. Your request will be sent to nearby eligible donors.",
+      "q4": "Is my personal information safe?",
+      "a4": "Yes, we prioritize your privacy. Your contact details are only shared with a user when you accept their request or offer. All data is securely encrypted."
+    },
+    "support": {
+      "title": "Contact Support",
+      "description": "Need help with something else? Reach out to our team.",
+      "cardTitle": "Send us a Message",
+      "cardDescription": "Our support team will get back to you within 24 hours.",
+      "emailLabel": "Your Email",
+      "emailPlaceholder": "you@example.com",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "e.g., Trouble with verification",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Describe your issue in detail...",
+      "sendButton": "Send Message"
+    },
+    "messages": {
+        "title": "Messages",
+        "description": "Your conversations with donors and recipients.",
+        "searchPlaceholder": "Search conversations..."
+    }
+}
