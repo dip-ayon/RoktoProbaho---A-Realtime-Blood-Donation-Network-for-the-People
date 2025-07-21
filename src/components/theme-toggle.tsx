@@ -4,8 +4,44 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from "class-variance-authority"
 
-export function ThemeToggle() {
+
+const themeToggleVariants = cva(
+  'relative flex items-center rounded-full transition-colors duration-500 ease-in-out',
+  {
+    variants: {
+      size: {
+        default: 'w-20 h-10',
+        sm: 'w-16 h-8',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  }
+);
+
+const thumbVariants = cva(
+  'absolute rounded-full bg-white shadow-lg transform transition-transform duration-500 ease-in-out flex items-center justify-center',
+  {
+      variants: {
+          size: {
+              default: 'w-8 h-8',
+              sm: 'w-6 h-6'
+          }
+      },
+      defaultVariants: {
+          size: 'default'
+      }
+  }
+);
+
+
+interface ThemeToggleProps extends VariantProps<typeof themeToggleVariants> {}
+
+
+export function ThemeToggle({ size }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = React.useState(false);
 
@@ -18,14 +54,19 @@ export function ThemeToggle() {
   };
 
   if (!isMounted) {
-    return <div className="w-20 h-10 rounded-full bg-muted animate-pulse" />;
+    return <div className={cn(themeToggleVariants({size}), "bg-muted animate-pulse")} />;
   }
+  
+  const thumbPosition = size === 'sm' 
+    ? (theme === 'light' ? 'translate-x-1' : 'translate-x-9') 
+    : (theme === 'light' ? 'translate-x-1' : 'translate-x-11');
+
 
   return (
     <button
       onClick={toggleTheme}
       className={cn(
-        'relative w-20 h-10 rounded-full flex items-center transition-colors duration-500 ease-in-out',
+        themeToggleVariants({size}),
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
         theme === 'light' ? 'bg-sky-400' : 'bg-gray-900'
       )}
@@ -50,9 +91,9 @@ export function ThemeToggle() {
       {/* Sun/Moon toggle thumb */}
       <div
         className={cn(
-          'absolute w-8 h-8 rounded-full bg-white shadow-lg transform transition-transform duration-500 ease-in-out',
-          'flex items-center justify-center',
-          theme === 'light' ? 'translate-x-1 bg-yellow-400' : 'translate-x-11 bg-gray-300'
+          thumbVariants({size}),
+          thumbPosition,
+          theme === 'light' ? 'bg-yellow-400' : 'bg-gray-300'
         )}
       >
         {/* Moon Craters */}

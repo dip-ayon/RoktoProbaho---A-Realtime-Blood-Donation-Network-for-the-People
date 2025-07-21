@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -166,7 +167,9 @@ export default function MessagesPage() {
   return (
     <div className="container mx-auto py-10 px-4">
         <div className="md:hidden">
-            {!selectedConversation ? <Card><ConversationList /></Card> : <Card><ChatView /></Card>}
+            <Card className="h-[calc(100vh-10rem)]">
+              {!selectedConversation ? <ConversationList /> : <ChatView />}
+            </Card>
         </div>
         <div className="hidden md:block">
              <Card className="h-[calc(100vh-12rem)] md:grid md:grid-cols-12 overflow-hidden">

@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -359,111 +359,126 @@ export default function Dashboard() {
       </div>
       
       {mode === 'donor' && (
-        <Card>
-            <CardHeader>
-                <CardTitle>{t('dashboard.nearbyRequests')}</CardTitle>
-                <CardDescription>{t('dashboard.nearbyRequestsDesc')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                {opportunities.length > 0 ? opportunities.map((op) => (
-                    <Card key={op.id} className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div className="flex-grow">
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="font-bold text-lg">{op.patientName}</span>
-                                <Badge variant="destructive">{op.urgency}</Badge>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1"><Icons.blood className="w-4 h-4 text-primary" /> Needs: <strong>{op.bloodType}</strong> ({op.quantity} {op.quantity > 1 ? t('units') : t('units').slice(0,-1)})</div>
-                                <div className="flex items-center gap-1"><Icons.location className="w-4 h-4" /> {op.location} ({op.distance})</div>
-                            </div>
-                        </div>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="w-full sm:w-auto"><Icons.map className="mr-2 h-4 w-4" />{t('dashboard.viewDetails')}</Button>
-                            </DialogTrigger>
-                             <DialogContent className="sm:max-w-lg p-0">
-                                <DialogHeader className="p-6 pb-4">
-                                    <DialogTitle>Donation Opportunity</DialogTitle>
-                                    <DialogDescription>
-                                        A patient nearby needs your help. Please review the details below.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <ScrollArea className="max-h-[calc(100vh-16rem)]">
-                                    <div className="px-6 pb-6 space-y-4">
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Patient:</span>
-                                            <span className="font-semibold">{op.patientName}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Blood Type:</span>
-                                            <Badge variant="outline">{op.bloodType}</Badge>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Quantity:</span>
-                                            <span className="font-semibold">{op.quantity} {op.quantity > 1 ? t('units') : t('units').slice(0,-1)}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Urgency:</span>
-                                            <Badge variant="destructive">{op.urgency}</Badge>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Needed By:</span>
-                                            <span className="font-semibold">{format(new Date(op.neededByDate), "PPP")}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Donation Center:</span>
-                                            <span className="font-semibold text-right">{op.hospitalName}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Address:</span>
-                                            <span className="text-right">{op.hospitalAddress}</span>
-                                        </div>
-                                        {op.details && (
-                                            <div className="text-sm">
-                                                <span className="text-muted-foreground font-semibold">Additional Details:</span>
-                                                <p className="mt-1 p-2 bg-muted rounded-md">{op.details}</p>
+        <div className="space-y-6">
+            <div>
+                <h2 className="text-2xl font-bold font-headline">{t('dashboard.nearbyRequests')}</h2>
+                <p className="text-muted-foreground">{t('dashboard.nearbyRequestsDesc')}</p>
+            </div>
+            {opportunities.length > 0 ? (
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {opportunities.map((op) => (
+                        <Card key={op.id} className="flex flex-col">
+                            <CardHeader>
+                                <div className="flex justify-between items-start">
+                                    <CardTitle className="text-xl">{op.patientName}</CardTitle>
+                                    <Badge variant="destructive">{op.urgency}</Badge>
+                                </div>
+                                <CardDescription className="flex items-center gap-1 pt-1">
+                                    <Icons.location className="w-4 h-4" /> {op.location} ({op.distance})
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-3">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground">Blood Group</span>
+                                    <span className="font-semibold">{op.bloodType}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground">Quantity</span>
+                                    <span className="font-semibold">{op.quantity} {op.quantity > 1 ? t('units') : t('units').slice(0,-1)}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground">Needed By</span>
+                                    <span className="font-semibold">{format(new Date(op.neededByDate), "PPP")}</span>
+                                </div>
+                            </CardContent>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="m-6 mt-0"><Icons.map className="mr-2 h-4 w-4" />{t('dashboard.viewDetails')}</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-lg">
+                                    <DialogHeader>
+                                        <DialogTitle>Donation Opportunity</DialogTitle>
+                                        <DialogDescription>
+                                            A patient nearby needs your help. Please review the details below.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <ScrollArea className="max-h-[calc(100vh-16rem)]">
+                                        <div className="px-6 pb-6 space-y-4">
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Patient:</span>
+                                                <span className="font-semibold">{op.patientName}</span>
                                             </div>
-                                        )}
-                                        <div className="mt-2 rounded-lg overflow-hidden">
-                                            <MapView lat={op.lat} lng={op.lng} />
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Blood Type:</span>
+                                                <Badge variant="outline">{op.bloodType}</Badge>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Quantity:</span>
+                                                <span className="font-semibold">{op.quantity} {op.quantity > 1 ? t('units') : t('units').slice(0,-1)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Urgency:</span>
+                                                <Badge variant="destructive">{op.urgency}</Badge>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Needed By:</span>
+                                                <span className="font-semibold">{format(new Date(op.neededByDate), "PPP")}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Donation Center:</span>
+                                                <span className="font-semibold text-right">{op.hospitalName}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-muted-foreground">Address:</span>
+                                                <span className="text-right">{op.hospitalAddress}</span>
+                                            </div>
+                                            {op.details && (
+                                                <div className="text-sm">
+                                                    <span className="text-muted-foreground font-semibold">Additional Details:</span>
+                                                    <p className="mt-1 p-2 bg-muted rounded-md">{op.details}</p>
+                                                </div>
+                                            )}
+                                            <div className="mt-2 rounded-lg overflow-hidden">
+                                                <MapView lat={op.lat} lng={op.lng} />
+                                            </div>
                                         </div>
-                                    </div>
-                                </ScrollArea>
-                                <DialogFooter className="grid grid-cols-2 gap-2 p-4 border-t">
-                                    <Button asChild variant="outline" className="w-full">
-                                      <a href={`tel:${op.phone}`}><Icons.phone className="mr-2 h-4 w-4" /> Contact</a>
-                                    </Button>
-                                     <Button onClick={() => handleOfferDonation(op)} className="w-full">
-                                        <Icons.userCheck className="mr-2 h-4 w-4" /> Offer
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </Card>
-                )) : (
-                     <p className="text-muted-foreground text-center py-8">{t('dashboard.noOpportunities')}</p>
-                )}
-            </CardContent>
-        </Card>
+                                    </ScrollArea>
+                                    <DialogFooter className="grid grid-cols-2 gap-2 p-4 border-t sm:p-6 sm:flex sm:flex-row sm:justify-end sm:space-x-2">
+                                        <Button asChild variant="outline" className="w-full sm:w-auto">
+                                          <a href={`tel:${op.phone}`}><Icons.phone className="mr-2 h-4 w-4" /> Contact</a>
+                                        </Button>
+                                         <Button onClick={() => handleOfferDonation(op)} className="w-full sm:w-auto">
+                                            <Icons.userCheck className="mr-2 h-4 w-4" /> Offer
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </Card>
+                    ))}
+                 </div>
+            ) : (
+                 <p className="text-muted-foreground text-center py-8">{t('dashboard.noOpportunities')}</p>
+            )}
+        </div>
       )}
 
       {mode === 'recipient' && (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <CardTitle>{t('dashboard.myBloodRequests')}</CardTitle>
                 <CardDescription>{requests.length > 0 ? t('dashboard.myBloodRequestsDesc') : "You have no active blood requests."}</CardDescription>
               </div>
                 <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
                   <DialogTrigger asChild>
-                    <Button><Icons.add className="mr-2 h-4 w-4" /> {t('dashboard.newRequest')}</Button>
+                    <Button className="w-full sm:w-auto"><Icons.add className="mr-2 h-4 w-4" /> {t('dashboard.newRequest')}</Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>{t('requestBlood.title')}</DialogTitle>
                       <DialogDescription>{t('requestBlood.description')}</DialogDescription>
                     </DialogHeader>
-                    <ScrollArea className="max-h-[70vh]">
+                    <ScrollArea className="max-h-[70vh] sm:max-h-[80vh]">
                         <RequestBloodForm onFormSubmit={() => setIsRequestModalOpen(false)} />
                     </ScrollArea>
                   </DialogContent>
@@ -484,7 +499,7 @@ export default function Dashboard() {
                                         {req.quantity} {t('units')} needed at {req.location} by <span className="font-semibold">{format(new Date(req.neededByDate), "PPP")}</span>
                                     </p>
                                 </div>
-                                <div className="text-sm text-muted-foreground">
+                                <div className="text-sm text-muted-foreground text-left sm:text-right">
                                     Requested on {req.date}
                                 </div>
                             </div>
@@ -497,7 +512,7 @@ export default function Dashboard() {
                                 </h4>
                                 <div className="space-y-3">
                                     {req.offers.map(offer => (
-                                        <div key={offer.id} className="flex items-center justify-between p-3 rounded-md bg-muted">
+                                        <div key={offer.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-md bg-muted gap-4">
                                             <div className="flex items-center gap-3">
                                                 <Avatar>
                                                     <AvatarImage src={offer.donorAvatarUrl} data-ai-hint="person portrait" />
@@ -508,7 +523,7 @@ export default function Dashboard() {
                                                     <p className="text-sm text-muted-foreground">Blood Type: {offer.donorBloodType}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 flex-wrap justify-start sm:justify-end w-full sm:w-auto">
                                                 {offer.status === 'Pending' && req.status === 'Open' && (
                                                     <>
                                                         <Button size="sm" onClick={() => handleOfferResponse(req.id, offer.id, true)}>Accept</Button>

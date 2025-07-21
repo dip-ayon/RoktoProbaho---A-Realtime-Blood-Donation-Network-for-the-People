@@ -9,10 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Icons } from './icons'
@@ -26,7 +22,7 @@ const menuItems = [
     { href: '/history', label: 'History', icon: Icons.history },
     { href: '/help', label: 'Help', icon: Icons.help },
     { href: '/support', label: 'Support', icon: Icons.support },
-    { href: '/', label: 'About Us', icon: Icons.info },
+    { href: '/', label: 'About Us', icon: Icons.userCog },
 ];
 
 function DesktopFooter() {
@@ -84,8 +80,8 @@ function DesktopFooter() {
 export default function Footer() {
   const pathname = usePathname();
   const { isLoggedIn, logout } = useAuth();
-  const { t, language, toggleLanguage, isLoaded } = useLanguage();
-  const { mode, setMode } = useRequests();
+  const { t } = useLanguage();
+  const { mode } = useRequests();
   
   const navItems = [
     { href: '/', label: t('nav.home'), icon: Icons.layoutDashboard },
@@ -143,29 +139,10 @@ export default function Footer() {
                     <DropdownMenuItem key={item.href} asChild>
                         <Link href={item.href} className="flex items-center gap-2">
                            <item.icon className="w-4 h-4" />
-                           <span>{t(`nav.${item.label.toLowerCase().replace(' ', '')}` as any, { defaultValue: item.label })}</span>
+                           <span>{t(`nav.${item.label.toLowerCase().replace(/ /g, '')}` as any, { defaultValue: item.label })}</span>
                         </Link>
                     </DropdownMenuItem>
                 ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                        <Icons.user className="mr-2 h-4 w-4" />
-                        <span>{t('nav.appMode')}</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
-                             <DropdownMenuItem onClick={() => setMode('donor')} disabled={mode === 'donor'}>
-                                <Icons.userCheck className="mr-2 h-4 w-4" />
-                                {t('nav.donorMode')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setMode('recipient')} disabled={mode === 'recipient'}>
-                                <Icons.users className="mr-2 h-4 w-4" />
-                                {t('nav.recipientMode')}
-                            </DropdownMenuItem>
-                        </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                     <Icons.logout className="mr-2" />

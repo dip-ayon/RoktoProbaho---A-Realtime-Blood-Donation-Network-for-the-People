@@ -61,21 +61,26 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col">
       <section className="py-20 md:py-32 bg-card">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold font-headline text-primary tracking-tighter">
-            {t('home.hero.title')}
-          </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
-            {t('home.hero.subtitle')}
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Button asChild size="lg" className="font-bold">
-              <Link href="/login">{t('home.hero.requestButton')}</Link>
-            </Button>
-            <Button asChild size="lg" variant="secondary" className="font-bold">
-              <Link href="/signup">{t('home.hero.donateButton')}</Link>
-            </Button>
-          </div>
+        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+            <div className="text-center md:text-left">
+                <h1 className="text-4xl md:text-6xl font-bold font-headline text-primary tracking-tighter">
+                    {t('home.hero.title')}
+                </h1>
+                <p className="mt-4 max-w-2xl mx-auto md:mx-0 text-lg md:text-xl text-muted-foreground">
+                    {t('home.hero.subtitle')}
+                </p>
+                <div className="mt-8 flex justify-center md:justify-start gap-4">
+                    <Button asChild size="lg" className="font-bold">
+                    <Link href="/login">{t('home.hero.requestButton')}</Link>
+                    </Button>
+                    <Button asChild size="lg" variant="secondary" className="font-bold">
+                    <Link href="/signup">{t('home.hero.donateButton')}</Link>
+                    </Button>
+                </div>
+            </div>
+            <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-2xl">
+                <Image src="https://placehold.co/600x400.png" alt="Happy blood donors and recipients" layout="fill" objectFit="cover" data-ai-hint="blood donation community" />
+            </div>
         </div>
       </section>
 

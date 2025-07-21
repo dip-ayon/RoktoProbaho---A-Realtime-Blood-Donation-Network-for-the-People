@@ -29,8 +29,12 @@ export default function SettingsPage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [dob, setDob] = useState<Date | undefined>();
     const [lastDonation, setLastDonation] = useState<Date | undefined>();
-    const { mode, setMode } = useRequests();
-    const { t, language, toggleLanguage, isLoaded } = useLanguage();
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const { mode, language } = useRequests();
+    const { t } = useLanguage();
 
     useEffect(() => {
         if (user) {
@@ -89,6 +93,33 @@ export default function SettingsPage() {
             description: "Your app preferences have been updated.",
         });
     };
+
+    const handleChangePassword = () => {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+          toast({
+            title: 'Fields are empty',
+            description: 'Please fill in all password fields.',
+            variant: 'destructive',
+          });
+          return;
+        }
+        if (newPassword !== confirmPassword) {
+          toast({
+            title: 'Passwords do not match',
+            description: 'Your new password and confirmation do not match.',
+            variant: 'destructive',
+          });
+          return;
+        }
+        // In a real app, you would have an API call here.
+        toast({
+          title: 'Password Changed',
+          description: 'Your password has been updated successfully.',
+        });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      };
 
     if (!profile) {
         return (
@@ -210,7 +241,7 @@ export default function SettingsPage() {
                     </RadioGroup>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                     <Label>{t('settings.profileDetails.bloodType')}</Label>
                     <Input value={profile.bloodType} readOnly disabled />
@@ -234,6 +265,30 @@ export default function SettingsPage() {
 
             <Card className="mt-8">
                 <CardHeader>
+                    <CardTitle>Change Password</CardTitle>
+                    <CardDescription>Update your password here. It's a good practice to use a strong password.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="current-password">Current Password</Label>
+                        <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="new-password">New Password</Label>
+                        <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="confirm-password">Confirm New Password</Label>
+                        <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button onClick={handleChangePassword}>Change Password</Button>
+                </CardFooter>
+            </Card>
+
+            <Card className="mt-8">
+                <CardHeader>
                     <CardTitle>{t('settings.appSettings.title')}</CardTitle>
                     <CardDescription>{t('settings.appSettings.description')}</CardDescription>
                 </CardHeader>
@@ -242,10 +297,10 @@ export default function SettingsPage() {
                         <div className="space-y-0.5">
                             <Label>{t('settings.appSettings.appMode')}</Label>
                             <p className="text-[0.8rem] text-muted-foreground">
-                                {mode === 'donor' ? t('settings.appSettings.donorMode') : t('settings.appSettings.recipientMode')}
+                                Your current role is set to <strong>{mode}</strong>. Click to switch roles.
                             </p>
                         </div>
-                        <AppModeToggle mode={mode} setMode={setMode} />
+                        <AppModeToggle />
                     </div>
                     <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
                          <div className="space-y-0.5">

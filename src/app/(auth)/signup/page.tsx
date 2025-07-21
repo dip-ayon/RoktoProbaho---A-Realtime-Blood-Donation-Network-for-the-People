@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -108,7 +109,7 @@ export default function SignupPage() {
                     />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="address">{t('signup.addressLabel')}</Label>
                   <Input id="address" placeholder={t('signup.addressPlaceholder')} required value={address} onChange={e => setAddress(e.target.value)} />

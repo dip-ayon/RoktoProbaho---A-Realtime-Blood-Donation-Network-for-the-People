@@ -6,89 +6,96 @@ import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { useAuth } from '@/context/auth-context';
 import { usePathname } from 'next/navigation';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRequests } from '@/context/request-context';
 import { useLanguage } from '@/context/language-context';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
+import { LanguageToggle } from './language-toggle';
+import { AppModeToggle } from './app-mode-toggle';
 
 export default function MainNav() {
   const { isLoggedIn, logout, user } = useAuth();
-  const { mode, setMode } = useRequests();
+  const { mode } = useRequests();
   const pathname = usePathname();
-  const { t, language, toggleLanguage, isLoaded } = useLanguage();
+  const { t } = useLanguage();
 
   const navItems = [
-    { href: '/', label: t('nav.home') },
-    { href: '/messages', label: t('nav.messages') },
-    { href: '/notifications', label: t('nav.notifications') },
-    { href: '/history', label: t('nav.history') },
+    { href: '/', label: t('nav.home'), icon: Icons.layoutDashboard },
+    { href: '/messages', label: t('nav.messages'), icon: Icons.chat },
+    { href: '/notifications', label: t('nav.notifications'), icon: Icons.notification },
+    { href: '/history', label: t('nav.history'), icon: Icons.history },
   ];
   
-  const recipientNav = { href: '/donors', label: 'Donors' };
-  const donorNav = { href: '/leaderboard', label: t('nav.leaderboard') };
+  const recipientNav = { href: '/donors', label: 'Donors', icon: Icons.users };
+  const donorNav = { href: '/leaderboard', label: t('nav.leaderboard'), icon: Icons.leaderboard };
 
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex gap-6 items-center">
+      <div className="container flex h-16 items-center">
+        <div className="mr-4 hidden md:flex">
           <Link href="/" className="flex items-center space-x-2">
             <Icons.logo className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary font-headline">RoktoProbaho</span>
+            <span className="hidden sm:inline-block text-2xl font-bold text-primary font-headline">RoktoProbaho</span>
           </Link>
+        </div>
+        
+        <div className="flex items-center gap-1">
           {isLoggedIn && (
-             <nav className="hidden h-16 md:flex items-center gap-2">
+             <nav className="hidden h-16 md:flex items-center gap-1">
                 {navItems.map(item => {
                   const isActive = item.href === '/' ? pathname === item.href : pathname.startsWith(item.href);
                   return (
-                    <Link 
-                      key={item.href} 
-                      href={item.href} 
-                      className={cn(
-                        "flex items-center px-4 text-sm font-medium h-full border-b-2 transition-colors",
-                        isActive 
-                          ? 'border-primary text-primary' 
-                          : 'border-transparent text-muted-foreground hover:text-primary'
-                      )}
-                    >
+                    <Button asChild variant="ghost" className={cn(
+                      "h-auto px-3 py-2 text-base font-semibold transition-colors",
+                      isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                    )}>
+                      <Link href={item.href} className="flex items-center gap-2">
+                        <item.icon className="h-5 w-5" />
                         {item.label}
-                    </Link>
+                      </Link>
+                    </Button>
                   )
                 })}
                  {mode === 'donor' ? (
-                  <Link 
-                    href={donorNav.href} 
-                    className={cn(
-                      "flex items-center px-4 text-sm font-medium h-full border-b-2 transition-colors",
-                      pathname.startsWith(donorNav.href)
-                        ? 'border-primary text-primary' 
-                        : 'border-transparent text-muted-foreground hover:text-primary'
-                    )}
-                  >
-                    {donorNav.label}
-                  </Link>
+                    <Button asChild variant="ghost" className={cn(
+                      "h-auto px-3 py-2 text-base font-semibold transition-colors",
+                      pathname.startsWith(donorNav.href) ? "text-primary" : "text-muted-foreground hover:text-primary"
+                    )}>
+                      <Link href={donorNav.href} className="flex items-center gap-2">
+                        <donorNav.icon className="h-5 w-5" />
+                        {donorNav.label}
+                      </Link>
+                    </Button>
                 ) : (
-                  <Link 
-                    href={recipientNav.href} 
-                    className={cn(
-                      "flex items-center px-4 text-sm font-medium h-full border-b-2 transition-colors",
-                      pathname.startsWith(recipientNav.href)
-                        ? 'border-primary text-primary' 
-                        : 'border-transparent text-muted-foreground hover:text-primary'
-                    )}
-                  >
-                    {recipientNav.label}
-                  </Link>
+                    <Button asChild variant="ghost" className={cn(
+                      "h-auto px-3 py-2 text-base font-semibold transition-colors",
+                      pathname.startsWith(recipientNav.href) ? "text-primary" : "text-muted-foreground hover:text-primary"
+                    )}>
+                      <Link href={recipientNav.href} className="flex items-center gap-2">
+                        <recipientNav.icon className="h-5 w-5" />
+                        {recipientNav.label}
+                      </Link>
+                    </Button>
                 )}
+                 <div className="ml-2 hidden sm:flex">
+                  <AppModeToggle />
+                </div>
              </nav>
           )}
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex-1" />
+
+        <div className="flex justify-end items-center space-x-2">
+            <div className="hidden sm:flex items-center gap-2">
+                <LanguageToggle size="sm" />
+            </div>
+            <ThemeToggle size="sm" />
             {isLoggedIn ? (
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:flex items-center">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -100,25 +107,6 @@ export default function MainNav() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56">
                         <DropdownMenuLabel>{t('nav.myAccount')}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                <Icons.user className="mr-2 h-4 w-4" />
-                                <span>{t('nav.appMode')}</span>
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <DropdownMenuItem onClick={() => setMode('donor')} disabled={mode === 'donor'}>
-                                      <Icons.userCheck className="mr-2 h-4 w-4" />
-                                      {t('nav.donorMode')}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setMode('recipient')} disabled={mode === 'recipient'}>
-                                      <Icons.users className="mr-2 h-4 w-4" />
-                                      {t('nav.recipientMode')}
-                                    </DropdownMenuItem>
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild><Link href="/settings"><Icons.settings className="mr-2" />{t('nav.settings')}</Link></DropdownMenuItem>
                         <DropdownMenuItem asChild><Link href="/help"><Icons.help className="mr-2" />{t('nav.help')}</Link></DropdownMenuItem>
@@ -132,7 +120,7 @@ export default function MainNav() {
                 </DropdownMenu>
               </div>
             ) : (
-              <nav className="flex items-center space-x-2">
+              <nav className="hidden md:flex items-center space-x-2">
                  <Button asChild variant="ghost">
                   <Link href="/login">{t('nav.login')}</Link>
                 </Button>
