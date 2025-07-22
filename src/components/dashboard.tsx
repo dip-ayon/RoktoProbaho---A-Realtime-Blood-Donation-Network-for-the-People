@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,11 +68,7 @@ const mapContainerStyle = {
   overflow: 'hidden',
 };
 
-interface RequestBloodFormProps {
-  onFormSubmit: () => void;
-}
-
-function RequestBloodForm({ onFormSubmit }: RequestBloodFormProps) {
+function RequestBloodForm() {
     const { toast } = useToast();
     const { addOpportunity } = useRequests();
     const { t } = useLanguage();
@@ -152,7 +148,6 @@ function RequestBloodForm({ onFormSubmit }: RequestBloodFormProps) {
             description: t('requestBlood.searchingDonors'),
             variant: "default",
         });
-        onFormSubmit();
     }
 
   return (
@@ -268,9 +263,11 @@ function RequestBloodForm({ onFormSubmit }: RequestBloodFormProps) {
                 <Textarea id="details" placeholder={t('requestBlood.detailsPlaceholder')} value={details} onChange={e => setDetails(e.target.value)} />
             </div>
 
-            <Button type="submit" className="w-full mt-2">
-                {t('requestBlood.submitButton')}
-            </Button>
+            <DialogClose asChild>
+              <Button type="submit" className="w-full mt-2">
+                  {t('requestBlood.submitButton')}
+              </Button>
+            </DialogClose>
         </form>
   );
 }
@@ -281,8 +278,8 @@ export default function Dashboard() {
     const { toast } = useToast();
     const { opportunities, mode } = useRequests();
     const { t } = useLanguage();
-    const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [requests, setRequests] = useState(initialRequests);
+    const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   
     const handleOfferDonation = (opportunity: DonationOpportunity) => {
         toast({
@@ -469,7 +466,7 @@ export default function Dashboard() {
                 <CardTitle>{t('dashboard.myBloodRequests')}</CardTitle>
                 <CardDescription>{requests.length > 0 ? t('dashboard.myBloodRequestsDesc') : "You have no active blood requests."}</CardDescription>
               </div>
-                <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
+                <Dialog>
                   <DialogTrigger asChild>
                     <Button className="w-full sm:w-auto"><Icons.add className="mr-2 h-4 w-4" /> {t('dashboard.newRequest')}</Button>
                   </DialogTrigger>
@@ -479,7 +476,7 @@ export default function Dashboard() {
                       <DialogDescription>{t('requestBlood.description')}</DialogDescription>
                     </DialogHeader>
                     <ScrollArea className="max-h-[70vh] sm:max-h-[80vh]">
-                        <RequestBloodForm onFormSubmit={() => setIsRequestModalOpen(false)} />
+                        <RequestBloodForm />
                     </ScrollArea>
                   </DialogContent>
                </Dialog>
@@ -565,9 +562,20 @@ export default function Dashboard() {
                 ))) : (
                      <div className="text-center py-16 text-muted-foreground">
                         <p>You haven't made any blood requests yet.</p>
-                        <Button className="mt-4" onClick={() => setIsRequestModalOpen(true)}>
-                            <Icons.add className="mr-2 h-4 w-4" /> Create Your First Request
-                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="mt-4"><Icons.add className="mr-2 h-4 w-4" /> Create Your First Request</Button>
+                            </DialogTrigger>
+                             <DialogContent className="sm:max-w-2xl">
+                                <DialogHeader>
+                                <DialogTitle>{t('requestBlood.title')}</DialogTitle>
+                                <DialogDescription>{t('requestBlood.description')}</DialogDescription>
+                                </DialogHeader>
+                                <ScrollArea className="max-h-[70vh] sm:max-h-[80vh]">
+                                    <RequestBloodForm />
+                                </ScrollArea>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 )}
             </CardContent>
@@ -576,3 +584,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+    

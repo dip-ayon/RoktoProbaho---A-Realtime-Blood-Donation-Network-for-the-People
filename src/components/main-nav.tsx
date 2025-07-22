@@ -14,9 +14,10 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 import { LanguageToggle } from './language-toggle';
 import { AppModeToggle } from './app-mode-toggle';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MainNav() {
-  const { isLoggedIn, logout, user } = useAuth();
+  const { isLoggedIn, logout, user, isAuthLoaded } = useAuth();
   const { mode } = useRequests();
   const pathname = usePathname();
   const { t } = useLanguage();
@@ -42,13 +43,13 @@ export default function MainNav() {
           </Link>
         </div>
         
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 md:gap-2">
           {isLoggedIn && (
              <nav className="hidden h-16 md:flex items-center gap-1">
                 {navItems.map(item => {
                   const isActive = item.href === '/' ? pathname === item.href : pathname.startsWith(item.href);
                   return (
-                    <Button asChild variant="ghost" className={cn(
+                    <Button key={item.href} asChild variant="ghost" className={cn(
                       "h-auto px-3 py-2 text-base font-semibold transition-colors",
                       isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
                     )}>
@@ -84,50 +85,57 @@ export default function MainNav() {
                   <AppModeToggle />
                 </div>
              </nav>
-          )}
+            )
+          }
         </div>
-
-        <div className="flex-1" />
+        <div className="flex flex-1 items-center justify-end" />
 
         <div className="flex justify-end items-center space-x-2">
             <div className="hidden sm:flex items-center gap-2">
                 <LanguageToggle size="sm" />
             </div>
             <ThemeToggle size="sm" />
-            {isLoggedIn ? (
-              <div className="hidden md:flex items-center">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                       <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                         <Avatar className="h-8 w-8">
-                           <AvatarImage src={user?.avatarUrl} data-ai-hint="person" alt={user?.name} />
-                           <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-                         </Avatar>
-                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        <DropdownMenuLabel>{t('nav.myAccount')}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild><Link href="/settings"><Icons.settings className="mr-2" />{t('nav.settings')}</Link></DropdownMenuItem>
-                        <DropdownMenuItem asChild><Link href="/help"><Icons.help className="mr-2" />{t('nav.help')}</Link></DropdownMenuItem>
-                        <DropdownMenuItem asChild><Link href="/support"><Icons.support className="mr-2" />{t('nav.support')}</Link></DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
-                            <Icons.logout className="mr-2" />
-                            <span>{t('nav.logout')}</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+            {isAuthLoaded ? (
+              isLoggedIn ? (
+                <div className="hidden md:flex items-center">
+                  <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                           <Avatar className="h-8 w-8">
+                             <AvatarImage src={user?.avatarUrl} data-ai-hint="person" alt={user?.name} />
+                             <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                           </Avatar>
+                         </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuLabel>{t('nav.myAccount')}</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild><Link href="/settings"><Icons.settings className="mr-2" />{t('nav.settings')}</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link href="/help"><Icons.help className="mr-2" />{t('nav.help')}</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link href="/support"><Icons.support className="mr-2" />{t('nav.support')}</Link></DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={logout} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+                              <Icons.logout className="mr-2" />
+                              <span>{t('nav.logout')}</span>
+                          </DropdownMenuItem>
+                      </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <nav className="hidden md:flex items-center space-x-2">
+                   <Button asChild variant="ghost">
+                    <Link href="/login">{t('nav.login')}</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="/signup">{t('nav.signup')}</Link>
+                  </Button>
+                </nav>
+              )
             ) : (
-              <nav className="hidden md:flex items-center space-x-2">
-                 <Button asChild variant="ghost">
-                  <Link href="/login">{t('nav.login')}</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/signup">{t('nav.signup')}</Link>
-                </Button>
-              </nav>
+               <div className="hidden md:flex items-center gap-2">
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-8 w-20" />
+              </div>
             )}
         </div>
       </div>
