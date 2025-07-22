@@ -79,7 +79,11 @@ export default function LandingPage() {
                 </div>
             </div>
             <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-2xl">
-                <Image src="/src/components/happydonor.jpg" alt="Happy blood donors and recipients" layout="fill" objectFit="cover" data-ai-hint="blood donation community" />
+                <Image src="happydonor.jpg" 
+                alt="Happy blood donors and recipients" 
+                layout="fill" 
+                objectFit="cover" 
+                data-ai-hint="blood donation community" />
             </div>
         </div>
       </section>
