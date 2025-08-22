@@ -352,6 +352,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5001;
+server.listen(PORT, () => console.log('Server on port', PORT));
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
@@ -360,3 +361,7 @@ server.listen(PORT, () => {
   console.log(`✅ Using in-memory database for testing`);
   console.log(`📊 Sample data loaded: ${inMemoryDB.users.length} users, ${inMemoryDB.bloodRequests.length} requests`);
 });
+const cors = require("cors");
+const allowed = (process.env.CORS_ORIGIN || "").split(",");
+app.use(cors({ origin: allowed.length ? allowed : true, credentials: true }));
+

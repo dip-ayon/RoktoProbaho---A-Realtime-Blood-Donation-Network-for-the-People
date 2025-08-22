@@ -16,7 +16,10 @@
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
     "deploy:local": "npm run build && npm run server",
-    "deploy:docker": "npm run docker:build && npm run docker:up"
+    "deploy:docker": "npm run docker:build && npm run docker:up",
+    "deploy:vercel": "npm run build && vercel --prod",
+    "deploy:prepare": "npm run typecheck && npm run build",
+    "postbuild": "echo 'Build completed successfully!'"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",

@@ -1,6 +1,15 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
-// API Response types
+declare const process: {
+  env: {
+    NEXT_PUBLIC_API_URL?: string;
+    [key: string]: string | undefined;
+  };
+};
+
+const base = process.env.NEXT_PUBLIC_API_URL ?? "";
+const res = await fetch(`${base}/api/whatever`);
+
+
 interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
