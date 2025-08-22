@@ -1,70 +1,64 @@
 'use client';
 
-import React from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import * as React from 'react';
 
-interface MapViewProps {
-  lat?: number;
-  lng?: number;
-  address?: string;
-}
-
-const mapContainerStyle = {
-  height: '250px',
-  width: '100%',
+type MapViewProps = {
+  lat: number;
+  lng: number;
+  zoom?: number;          // default 14
+  height?: number | string; // default 250
+  className?: string;
+  rounded?: boolean;      // default true
 };
 
-const libraries: ('places' | 'drawing' | 'geometry' | 'localContext' | 'visualization')[] = ['places'];
+export default function MapView({
+  lat,
+  lng,
+  zoom = 14,
+  height = 250,
+  className = '',
+  rounded = true,
+}: MapViewProps) {
+  // Basic validation to avoid empty/NaN if lat/lng missing
+  const hasCoords =
+    typeof lat === 'number' &&
+    typeof lng === 'number' &&
+    !Number.isNaN(lat) &&
+    !Number.isNaN(lng);
 
-const MapView: React.FC<MapViewProps> = ({ lat, lng, address }) => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries,
-    id: 'display-map-script', // Unique ID to avoid conflicts
-  });
-
-  if (loadError) {
+  if (!hasCoords) {
     return (
-      <div className="h-[250px] rounded-lg bg-muted flex items-center justify-center text-center p-4 text-muted-foreground">
-        Map could not be loaded. Please ensure the Google Maps API key is correct and has the necessary APIs enabled.
+      <div
+        className={`w-full flex items-center justify-center bg-muted text-muted-foreground ${
+          rounded ? 'rounded-lg' : ''
+        } ${className}`}
+        style={{ height: typeof height === 'number' ? `${height}px` : height }}
+      >
+        📍 Map unavailable — missing coordinates
       </div>
     );
   }
 
-  if (!isLoaded) {
-    return (
-      <div className="h-[250px] rounded-lg bg-muted flex items-center justify-center text-center p-4 text-muted-foreground">
-        Loading map...
-      </div>
-    );
-  }
-  
-  if (typeof lat === 'undefined' || typeof lng === 'undefined') {
-    return (
-        <div className="h-[250px] rounded-lg bg-muted flex items-center justify-center text-center p-4 text-muted-foreground">
-            Location data not available.
-        </div>
-    )
-  }
-  
-  const center = { lat, lng };
+  // No API key required: standard embed works fine for display
+  const src = `https://www.google.com/maps?q=${encodeURIComponent(
+    `${lat},${lng}`
+  )}&z=${encodeURIComponent(String(zoom))}&output=embed`;
 
   return (
-    <div className="relative h-[250px] w-full rounded-lg overflow-hidden group">
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={15}
-        center={center}
-        options={{
-          disableDefaultUI: true,
-          zoomControl: true,
-        }}
-      >
-        <Marker position={center} />
-      </GoogleMap>
-      {address && <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white text-xs text-center">{address}</div>}
+    <div
+      className={`${rounded ? 'rounded-lg overflow-hidden' : ''} ${className}`}
+      style={{ height: typeof height === 'number' ? `${height}px` : height }}
+      aria-label="Map view"
+    >
+      <iframe
+        title="map"
+        src={src}
+        width="100%"
+        height="100%"
+        style={{ border: 0 }}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
     </div>
   );
-};
-
-export default MapView;
+}

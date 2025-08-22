@@ -36,6 +36,8 @@ export interface User {
   role: string;
   createdAt: string;
   updatedAt: string;
+  avatarUrl?: string;
+  
 }
 
 // Blood Request types

@@ -8,27 +8,38 @@ import { apiClient } from '@/lib/api';
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 
+type TestResult = {
+  success: boolean;
+  error?: string;
+  data?: unknown;
+};
+
 export default function FeatureTest() {
-  const [testResults, setTestResults] = useState<Record<string, any>>({});
+  const [testResults, setTestResults] = useState<Record<string, TestResult>>({});
   const [loading, setLoading] = useState<string | null>(null);
   const { user, login, register, logout } = useAuth();
   const { toast } = useToast();
 
-  const runTest = async (testName: string, testFn: () => Promise<any>) => {
+  const runTest = async (testName: string, testFn: () => Promise<TestResult>) => {
     setLoading(testName);
     try {
       const result = await testFn();
-      setTestResults(prev => ({ ...prev, [testName]: result }));
+      setTestResults((prev) => ({ ...prev, [testName]: result }));
       toast({
         title: `${testName} Test`,
         description: result.success ? '✅ Passed' : `❌ Failed: ${result.error}`,
         variant: result.success ? 'default' : 'destructive',
       });
-    } catch (error) {
-      setTestResults(prev => ({ ...prev, [testName]: { success: false, error: error.message } }));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : typeof err === 'string' ? err : JSON.stringify(err);
+
+      const fail: TestResult = { success: false, error: message };
+
+      setTestResults((prev) => ({ ...prev, [testName]: fail }));
       toast({
         title: `${testName} Test`,
-        description: `❌ Error: ${error.message}`,
+        description: `❌ Error: ${message}`,
         variant: 'destructive',
       });
     } finally {
@@ -36,19 +47,19 @@ export default function FeatureTest() {
     }
   };
 
-  const tests = [
+  const tests: { name: string; fn: () => Promise<TestResult>; description: string }[] = [
     {
       name: 'Health Check',
-      fn: () => apiClient.healthCheck(),
-      description: 'Test backend connectivity'
+      fn: async () => apiClient.healthCheck(),
+      description: 'Test backend connectivity',
     },
     {
       name: 'Login Test',
       fn: async () => {
         const result = await login({ email: 'test@example.com', password: 'password123' });
-        return result;
+        return result as TestResult;
       },
-      description: 'Test user login functionality'
+      description: 'Test user login functionality',
     },
     {
       name: 'Registration Test',
@@ -66,34 +77,34 @@ export default function FeatureTest() {
             street: '123 Test Street',
             city: 'Dhaka',
             state: 'Dhaka',
-            country: 'Bangladesh'
-          }
-          // Location is now optional
+            country: 'Bangladesh',
+          },
+          // Location is optional
         });
-        return result;
+        return result as TestResult;
       },
-      description: 'Test user registration (location optional)'
+      description: 'Test user registration (location optional)',
     },
     {
       name: 'Get Donors',
-      fn: () => apiClient.getDonors(),
-      description: 'Test donor listing (public)'
+      fn: async () => apiClient.getDonors(),
+      description: 'Test donor listing (public)',
     },
     {
       name: 'Get Blood Requests',
-      fn: () => apiClient.getBloodRequests(),
-      description: 'Test blood request listing (public)'
+      fn: async () => apiClient.getBloodRequests(),
+      description: 'Test blood request listing (public)',
     },
     {
       name: 'Get Donor Stats',
-      fn: () => apiClient.getDonorStats(),
-      description: 'Test donor statistics (public)'
+      fn: async () => apiClient.getDonorStats(),
+      description: 'Test donor statistics (public)',
     },
     {
       name: 'Get Leaderboard',
-      fn: () => apiClient.getDonorLeaderboard(),
-      description: 'Test leaderboard functionality (public)'
-    }
+      fn: async () => apiClient.getDonorLeaderboard(),
+      description: 'Test leaderboard functionality (public)',
+    },
   ];
 
   return (
@@ -139,9 +150,13 @@ export default function FeatureTest() {
             >
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  {loading === test.name ? '⏳' : 
-                   testResults[test.name]?.success ? '✅' : 
-                   testResults[test.name] ? '❌' : '🔍'}
+                  {loading === test.name
+                    ? '⏳'
+                    : testResults[test.name]?.success
+                    ? '✅'
+                    : testResults[test.name]
+                    ? '❌'
+                    : '🔍'}
                   <span className="font-medium">{test.name}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -164,14 +179,14 @@ export default function FeatureTest() {
                     {result.success ? 'PASS' : 'FAIL'}
                   </Badge>
                 </div>
-                {result.error && (
-                  <p className="text-sm text-red-600">{result.error}</p>
-                )}
-                {result.success && result.data && (
-                  <p className="text-sm text-green-600">
-                    {typeof result.data === 'object' ? 'Data received successfully' : result.data}
-                  </p>
-                )}
+                {result.error && <p className="text-sm text-red-600">{result.error}</p>}
+                {result.success && result.data !== undefined && (
+  <p className="text-sm text-green-600">
+    {typeof result.data === 'object'
+      ? 'Data received successfully'
+      : String(result.data)}
+  </p>
+)}
               </div>
             ))}
           </div>
@@ -179,18 +194,10 @@ export default function FeatureTest() {
 
         {/* Quick Actions */}
         <div className="flex gap-2">
-          <Button
-            onClick={() => logout()}
-            variant="outline"
-            size="sm"
-          >
+          <Button onClick={() => logout()} variant="outline" size="sm">
             Logout
           </Button>
-          <Button
-            onClick={() => setTestResults({})}
-            variant="outline"
-            size="sm"
-          >
+          <Button onClick={() => setTestResults({})} variant="outline" size="sm">
             Clear Results
           </Button>
         </div>
