@@ -38,7 +38,20 @@ export default function SettingsPage() {
 
     useEffect(() => {
         if (user) {
-            setProfile(user);
+            // Ensure all required fields have default values
+            const userWithDefaults = {
+                ...user,
+                badges: user.badges || [],
+                donations: user.donations || '0',
+                availability: user.availability || 'Available',
+                bloodType: user.bloodType || user.bloodGroup || 'N/A',
+                avatarUrl: user.avatarUrl || user.profilePicture || '',
+                dateOfBirth: user.dateOfBirth || '',
+                lastDonationDate: user.lastDonationDate || '',
+                phone: user.phone || '',
+                address: user.address || { street: '', city: '', state: '', country: '' }
+            };
+            setProfile(userWithDefaults);
             if (user.dateOfBirth) {
                 setDob(new Date(user.dateOfBirth));
             }
@@ -142,7 +155,7 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4">
                     <Avatar className="h-20 w-20">
                         <AvatarImage src={profile.avatarUrl} data-ai-hint="person" />
-                        <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{profile.name?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="avatar-upload" className={cn(buttonVariants(), "cursor-pointer")}>
@@ -168,7 +181,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="grid gap-2">
                     <Label htmlFor="address">{t('settings.profileDetails.address')}</Label>
-                    <Input id="address" value={profile.address} onChange={(e) => handleFieldChange('address', e.target.value)} />
+                    <Input id="address" value={profile.address || ''} onChange={(e) => handleFieldChange('address', e.target.value)} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="dob">{t('settings.profileDetails.dob')}</Label>
@@ -253,7 +266,16 @@ export default function SettingsPage() {
                     <div className="md:col-span-2">
                     <Label>{t('settings.profileDetails.badges')}</Label>
                     <div className="flex flex-wrap gap-2 mt-2">
-                        {profile.badges.map(badge => <Badge key={badge} variant="secondary" className="text-sm"><Icons.award className="w-4 h-4 mr-1"/>{badge}</Badge>)}
+                        {profile.badges && profile.badges.length > 0 ? (
+                            profile.badges.map(badge => (
+                                <Badge key={badge} variant="secondary" className="text-sm">
+                                    <Icons.award className="w-4 h-4 mr-1"/>
+                                    {badge}
+                                </Badge>
+                            ))
+                        ) : (
+                            <p className="text-sm text-muted-foreground">No badges earned yet. Start donating to earn badges!</p>
+                        )}
                     </div>
                     </div>
                 </div>

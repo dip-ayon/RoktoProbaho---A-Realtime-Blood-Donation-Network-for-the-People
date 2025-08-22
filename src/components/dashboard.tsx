@@ -121,10 +121,10 @@ function RequestBloodForm() {
             return;
         }
 
-        if (!patientName || !bloodType || !location || !urgency || !phone || quantity < 1 || !marker || !neededDate) {
+        if (!patientName || !bloodType || !location || !urgency || !phone || quantity < 1 || !neededDate) {
              toast({
                 title: t('requestBlood.incompleteForm'),
-                description: "Please fill all fields, pin a location on the map, and set a date.",
+                description: "Please fill all required fields and set a date.",
                 variant: "destructive",
             });
             return;
@@ -137,8 +137,8 @@ function RequestBloodForm() {
             location,
             urgency,
             phone: `+88${phone}`,
-            lat: marker.lat,
-            lng: marker.lng,
+            lat: marker?.lat,
+            lng: marker?.lng,
             neededByDate: format(neededDate, 'yyyy-MM-dd'),
             details: details,
         });
@@ -181,30 +181,46 @@ function RequestBloodForm() {
             
             <div className="grid gap-2">
                 <Label htmlFor="location">{t('requestBlood.location')}</Label>
-                <p className="text-sm text-muted-foreground">Click on the map to pin the exact location.</p>
+                <p className="text-sm text-muted-foreground">Enter your address. Map pinning is optional.</p>
                 
-                {loadError && <div className="text-destructive text-center p-4">Map could not be loaded. Please check API key and refresh.</div>}
-                {!isLoaded && !loadError && <div className="text-muted-foreground text-center p-4">Loading map...</div>}
-                {isLoaded && !loadError && (
-                    <div style={mapContainerStyle}>
-                        <GoogleMap
-                            mapContainerStyle={{ width: '100%', height: '100%' }}
-                            center={{ lat: 23.8103, lng: 90.4125 }} // Dhaka
-                            zoom={11}
-                            onClick={onMapClick}
-                            options={{ disableDefaultUI: true, zoomControl: true }}
-                        >
-                            {marker && <Marker position={marker} />}
-                        </GoogleMap>
-                    </div>
-                )}
-                 <Input 
+                <Input 
                     id="location" 
                     placeholder={t('requestBlood.addressPlaceholder')} 
                     required 
                     value={location} 
                     onChange={(e) => setLocation(e.target.value)} 
                     />
+                
+                {/* Optional Map Section */}
+                <div className="mt-2">
+                    <details className="group">
+                        <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                            📍 Pin exact location on map (Optional)
+                        </summary>
+                        <div className="mt-2">
+                            {loadError && <div className="text-destructive text-center p-4">Map could not be loaded. Please check API key and refresh.</div>}
+                            {!isLoaded && !loadError && <div className="text-muted-foreground text-center p-4">Loading map...</div>}
+                            {isLoaded && !loadError && (
+                                <div style={mapContainerStyle}>
+                                    <GoogleMap
+                                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                                        center={{ lat: 23.8103, lng: 90.4125 }} // Dhaka
+                                        zoom={11}
+                                        onClick={onMapClick}
+                                        options={{ disableDefaultUI: true, zoomControl: true }}
+                                    >
+                                        {marker && <Marker position={marker} />}
+                                    </GoogleMap>
+                                </div>
+                            )}
+                            {marker && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    ✅ Location pinned at: {marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}
+                                </p>
+                            )}
+                        </div>
+                    </details>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -436,7 +452,13 @@ export default function Dashboard() {
                                                 </div>
                                             )}
                                             <div className="mt-2 rounded-lg overflow-hidden">
-                                                <MapView lat={op.lat} lng={op.lng} />
+                                                {op.lat && op.lng ? (
+                                                    <MapView lat={op.lat} lng={op.lng} />
+                                                ) : (
+                                                    <div className="h-[250px] rounded-lg bg-muted flex items-center justify-center text-center p-4 text-muted-foreground">
+                                                        📍 Location: {op.location}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </ScrollArea>

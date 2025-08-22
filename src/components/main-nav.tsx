@@ -17,10 +17,13 @@ import { AppModeToggle } from './app-mode-toggle';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MainNav() {
-  const { isLoggedIn, logout, user, isAuthLoaded } = useAuth();
+  const { user, logout, loading } = useAuth();
   const { mode } = useRequests();
   const pathname = usePathname();
   const { t } = useLanguage();
+  
+  const isLoggedIn = !!user;
+  const isAuthLoaded = !loading;
 
   const navItems = [
     { href: '/', label: t('nav.home'), icon: Icons.layoutDashboard },

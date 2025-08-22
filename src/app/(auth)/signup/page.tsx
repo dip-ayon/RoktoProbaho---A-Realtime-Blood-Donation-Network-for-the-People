@@ -17,7 +17,7 @@ import type { BloodType } from '@/lib/types';
 const bloodTypes: BloodType[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 export default function SignupPage() {
-  const { login } = useAuth();
+  const { register } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
   const [fullName, setFullName] = useState('');
@@ -26,8 +26,9 @@ export default function SignupPage() {
   const [address, setAddress] = useState('');
   const [bloodType, setBloodType] = useState<BloodType | ''>('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!fullName || !email || !phone || !address || !bloodType || !password) {
@@ -48,28 +49,46 @@ export default function SignupPage() {
       return;
     }
 
-    const newUserProfile = {
-        id: `usr_${Date.now()}`,
+    setLoading(true);
+    try {
+      const result = await register({
         name: fullName,
         email,
         phone: `+88${phone}`,
-        address,
-        bloodType: bloodType as BloodType,
-        availability: 'Available' as const,
-        donations: 0,
-        lastDonationDate: '',
+        password,
+        bloodGroup: bloodType,
         dateOfBirth: '1990-01-01', // Placeholder
-        avatarUrl: 'https://placehold.co/128x128.png',
-        badges: [],
-        weight: 0,
-        role: 'donor' as const,
-    };
+        gender: 'other',
+        address: {
+          street: address,
+          city: 'Dhaka',
+          state: 'Dhaka',
+          country: 'Bangladesh'
+        }
+        // Location is now optional - will be added later if needed
+      });
 
-    toast({
-      title: 'Account Created!',
-      description: "You're now ready to save lives.",
-    });
-    login(newUserProfile);
+      if (result.success) {
+        toast({
+          title: 'Account Created!',
+          description: "You're now ready to save lives.",
+        });
+      } else {
+        toast({
+          title: 'Registration Failed',
+          description: result.error || 'Failed to create account',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Registration Failed',
+        description: 'An error occurred. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -134,8 +153,8 @@ export default function SignupPage() {
                 <Label htmlFor="password">{t('signup.passwordLabel')}</Label>
                 <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
               </div>
-              <Button type="submit" className="w-full">
-                {t('signup.createAccountButton')}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creating Account...' : t('signup.createAccountButton')}
               </Button>
             </form>
             <div className="mt-4 text-center text-sm">

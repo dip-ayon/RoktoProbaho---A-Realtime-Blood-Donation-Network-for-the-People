@@ -14,7 +14,7 @@ export interface UserProfile {
   lastDonationDate: string; // e.g., '2023-10-26'
   dateOfBirth: string;
   avatarUrl: string;
-  badges: string[];
+  badges?: string[];
   role: 'donor' | 'recipient' | 'admin';
   weight?: number;
 }
@@ -50,8 +50,8 @@ export interface DonationOpportunity {
     bloodType: BloodType;
     urgency: UrgencyLevel;
     phone: string;
-    lat?: number;
-    lng?: number;
+    lat?: number; // Optional coordinates
+    lng?: number; // Optional coordinates
     quantity: number;
     hospitalName: string;
     hospitalAddress: string;

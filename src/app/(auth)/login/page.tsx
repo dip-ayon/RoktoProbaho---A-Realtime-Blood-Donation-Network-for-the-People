@@ -12,39 +12,43 @@ import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 
-const mockUser = {
-    id: 'usr_1',
-    name: 'Dip Kundu',
-    email: 'dip.kundu@example.com',
-    phone: '+8801711223344',
-    address: '123 Mirpur, Dhaka',
-    bloodType: 'O+' as const,
-    availability: 'Available' as const,
-    donations: 5,
-    lastDonationDate: '2023-11-15',
-    dateOfBirth: '1990-05-25',
-    avatarUrl: 'https://placehold.co/128x128.png',
-    badges: ['5+ Donations', 'First Responder'],
-    role: 'donor' as const,
-    weight: 75,
-  };
+
 
 export default function LoginPage() {
   const { login } = useAuth();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { t } = useLanguage();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {
-      // In a real app, you'd validate credentials here
-      toast({
-        title: 'Login Successful',
-        description: 'Welcome back!',
-      });
-      login(mockUser);
+      setLoading(true);
+      try {
+        const result = await login({ email, password });
+        if (result.success) {
+          toast({
+            title: 'Login Successful',
+            description: 'Welcome back!',
+          });
+        } else {
+          toast({
+            title: 'Login Failed',
+            description: result.error || 'Invalid credentials',
+            variant: 'destructive',
+          });
+        }
+      } catch (error) {
+        toast({
+          title: 'Login Failed',
+          description: 'An error occurred. Please try again.',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
       toast({
         title: 'Login Failed',
@@ -87,8 +91,8 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  {t('login.loginButton')}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Logging in...' : t('login.loginButton')}
                 </Button>
               </div>
             </form>
